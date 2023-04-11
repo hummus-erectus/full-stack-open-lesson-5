@@ -91,11 +91,11 @@ const App = () => {
   const addLike = async (id) => {
     const blog = blogs.find(n => n.id === id)
     const updatedBlog = { ...blog, likes: blog.likes+1 }
-    console.log('updatedblog', updatedBlog)
+    // console.log('updatedblog', updatedBlog)
 
     try {
       const returnedBlog = await blogService.update(id, updatedBlog)
-      console.log('returnedBlog', returnedBlog)
+      // console.log('returnedBlog', returnedBlog)
       setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
     } catch (error) {
       setFeedbackMessage({
