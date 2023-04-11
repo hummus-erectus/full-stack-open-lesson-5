@@ -99,14 +99,32 @@ const App = () => {
       setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
     } catch (error) {
       setFeedbackMessage({
-        message: error.message,
+        message: `Blog '${blog.title} was already removed from the server`,
         type: 'error'
       })
       setTimeout(() => {
         setFeedbackMessage(null)
       }, 5000)
     }
+  }
 
+  const deleteBlog = async (id) => {
+    const blog = blogs.find(n => n.id === id)
+
+    if (window.confirm(`Do you really want to delete ${blog.title}?`)){
+      try {
+        await blogService.remove(id)
+        setBlogs(blogs.filter(blog => blog.id!== id))
+      } catch (error) {
+        setFeedbackMessage({
+          message: error.message,
+          type: 'error'
+        })
+        setTimeout(() => {
+          setFeedbackMessage(null)
+        }, 5000)
+      }
+    }
   }
 
   const notification = () => (
@@ -159,7 +177,13 @@ const App = () => {
 
           <h2>Blogs</h2>
           {blogs.sort((a,b) => a.likes - b.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)}/>
+            <Blog
+              key={blog.id}
+              blog={blog}
+              addLike={() => addLike(blog.id)}
+              deleteBlog={() => deleteBlog(blog.id)}
+              user={user}
+            />
           )}
         </>
       }
