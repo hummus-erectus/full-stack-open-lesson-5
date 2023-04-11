@@ -88,6 +88,27 @@ const App = () => {
     }
   }
 
+  const addLike = async (id) => {
+    const blog = blogs.find(n => n.id === id)
+    const updatedBlog = { ...blog, likes: blog.likes+1 }
+    console.log('updatedblog', updatedBlog)
+
+    try {
+      const returnedBlog = await blogService.update(id, updatedBlog)
+      console.log('returnedBlog', returnedBlog)
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+    } catch (error) {
+      setFeedbackMessage({
+        message: error.message,
+        type: 'error'
+      })
+      setTimeout(() => {
+        setFeedbackMessage(null)
+      }, 5000)
+    }
+
+  }
+
   const notification = () => (
     <div className={`feedback ${feedbackMessage.type} `}>
         {feedbackMessage.message}
@@ -138,7 +159,7 @@ const App = () => {
 
           <h2>Blogs</h2>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)}/>
           )}
         </>
       }
