@@ -129,7 +129,7 @@ const App = () => {
 
   const notification = () => (
     <div className={`feedback ${feedbackMessage.type} `}>
-        {feedbackMessage.message}
+      {feedbackMessage.message}
     </div>
   )
 
@@ -143,14 +143,14 @@ const App = () => {
           <button onClick={() => setLoginVisible(true)}>log in</button>
         </div> */}
         {/* <div style={showWhenVisible}> */}
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-          {/* <button onClick={() => setLoginVisible(false)}>cancel</button> */}
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
+        {/* <button onClick={() => setLoginVisible(false)}>cancel</button> */}
         {/* </div> */}
       </div>
     )

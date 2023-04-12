@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState } from 'react'
 
-const Blog = ({blog, addLike, deleteBlog, user }) => {
+const Blog = ({ blog, addLike, deleteBlog, user }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const blogStyle = {
@@ -15,7 +15,7 @@ const Blog = ({blog, addLike, deleteBlog, user }) => {
     <div style={blogStyle}>
       <div>
         {blog.title} {blog.author}
-        <button onClick={() => setIsOpen(prev => !prev)}>{isOpen? "hide" : "show"}</button>
+        <button onClick={() => setIsOpen(prev => !prev)}>{isOpen? 'hide' : 'show'}</button>
       </div>
       {isOpen?
         <>
@@ -24,7 +24,7 @@ const Blog = ({blog, addLike, deleteBlog, user }) => {
           <p>{blog.user.name}</p>
           {blog.user.username === user.username && <button onClick={deleteBlog}>remove</button>}
         </>
-      :
+        :
         null
       }
 
