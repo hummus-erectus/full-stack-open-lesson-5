@@ -20,7 +20,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
       {isOpen?
         <>
           <p className='url'>{blog.url}</p>
-          <p className='likes'>{blog.likes} <button onClick={addLike}>likes</button></p>
+          <p className='likes'>{blog.likes} <button onClick={addLike} className='likeButton'>likes</button></p>
           <p className='name'>{blog.user.name}</p>
           {blog.user.username === user.username && <button className='removeButton' onClick={deleteBlog}>remove</button>}
         </>
