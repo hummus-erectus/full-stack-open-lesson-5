@@ -12,7 +12,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div>
         {blog.title} {blog.author}
         <button onClick={() => setIsOpen(prev => !prev)}>{isOpen? 'hide' : 'show'}</button>
