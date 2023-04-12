@@ -13,16 +13,16 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
 
   return (
     <div style={blogStyle} className='blog'>
-      <div>
+      <div className='titleAndAuthor'>
         {blog.title} {blog.author}
-        <button onClick={() => setIsOpen(prev => !prev)}>{isOpen? 'hide' : 'show'}</button>
+        <button className="toggleButton" onClick={() => setIsOpen(prev => !prev)}>{isOpen? 'hide' : 'show'}</button>
       </div>
       {isOpen?
         <>
-          <p>{blog.url}</p>
-          <p>{blog.likes} <button onClick={addLike}>likes</button></p>
-          <p>{blog.user.name}</p>
-          {blog.user.username === user.username && <button onClick={deleteBlog}>remove</button>}
+          <p className='url'>{blog.url}</p>
+          <p className='likes'>{blog.likes} <button onClick={addLike}>likes</button></p>
+          <p className='name'>{blog.user.name}</p>
+          {blog.user.username === user.username && <button className='removeButton' onClick={deleteBlog}>remove</button>}
         </>
         :
         null

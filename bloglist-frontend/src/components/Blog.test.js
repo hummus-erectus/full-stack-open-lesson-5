@@ -1,6 +1,6 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
@@ -17,15 +17,15 @@ test('renders title and author, but not URL or number of likes', async () => {
     }
   }
 
-  render(<Blog blog={blog} />)
+  const { container } = render(<Blog blog={blog}/>)
 
-  const titleAndAuthor = screen.getByText('A new blog Mr Blog')
+  const titleAndAuthor = container.querySelector('titleAndAuthor')
   expect(titleAndAuthor).toBeDefined()
 
-  const url = screen.queryByText('www.wowee.org/yikes')
+  const url = container.querySelector('url')
   expect(url).toBeNull()
 
-  const likes = screen.queryByText('50')
+  const likes = container.querySelector('likes')
   expect(likes).toBeNull()
 
 })
@@ -49,15 +49,15 @@ test('clicking the button reveals url and likes', async () => {
     id:'34hf93hf98h39fh3'
   }
 
-  render(<Blog blog={blog} user={mockUser}/>)
+  const { container } = render(<Blog blog={blog} user={mockUser}/>)
 
   const user = userEvent.setup()
-  const button = screen.getByText('show')
+  const button = container.querySelector('.toggleButton')
   await user.click(button)
 
-  const url = screen.getByText('www.wowee.org/yikes')
+  const url = container.querySelector('url')
   expect(url).toBeDefined()
 
-  const likes = screen.getByText('50')
+  const likes = container.querySelector('likes')
   expect(likes).toBeDefined()
 })
