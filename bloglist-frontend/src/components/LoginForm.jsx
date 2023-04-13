@@ -7,7 +7,7 @@ const LoginForm = ({
   username,
   password
 }) => (
-  <>
+  <div className='loginContainer'>
     <h2>Login to application</h2>
     <form onSubmit={handleSubmit}>
       <div>
@@ -30,7 +30,7 @@ const LoginForm = ({
       </div>
       <button type="submit">login</button>
     </form>
-  </>
+  </div>
 )
 
 LoginForm.propTypes = {
