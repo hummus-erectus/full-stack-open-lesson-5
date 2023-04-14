@@ -115,6 +115,13 @@ const App = () => {
       try {
         await blogService.remove(id)
         setBlogs(blogs.filter(blog => blog.id!== id))
+        setFeedbackMessage({
+          message: `Successfully removed ${blog.title} by ${blog.author}`,
+          type: 'success'
+        })
+        setTimeout(() => {
+          setFeedbackMessage(null)
+        }, 5000)
       } catch (error) {
         setFeedbackMessage({
           message: error.message,

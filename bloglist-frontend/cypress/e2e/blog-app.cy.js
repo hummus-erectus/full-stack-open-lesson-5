@@ -67,6 +67,19 @@ describe('Blog app', function() {
         cy.get('.likes').contains('1')
 
       })
+
+      it('the user can delete a blog listing they created', function () {
+        cy.get('.blogsList')
+          .contains('Test Blog')
+          .contains('show')
+          .click()
+
+        cy.get('.removeButton').click()
+        cy.on('window:confirm', () => true)
+        cy.get('.feedback').should('contain', 'Successfully removed Test Blog by John Smith')
+        cy.get('.blogsList').should('not.contain', 'Test Blog')
+      })
+
     })
   })
 
