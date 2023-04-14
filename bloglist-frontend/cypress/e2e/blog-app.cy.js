@@ -38,13 +38,35 @@ describe('Blog app', function() {
       cy.contains('login').click()
     })
 
-    it('A blog can be created', function() {
+    it('a blog can be created', function() {
       cy.contains('new blog').click()
       cy.get('#titleInput').type('Test Blog')
       cy.get('#authorInput').type('John Smith')
       cy.get('#urlInput').type('www.exampleblog.com')
       cy.get('.submitButton').click()
       cy.contains('Test Blog John Smith')
+    })
+
+    describe('and a blog exists', function () {
+      beforeEach(function () {
+        cy.contains('new blog').click()
+        cy.get('#titleInput').type('Test Blog')
+        cy.get('#authorInput').type('John Smith')
+        cy.get('#urlInput').type('www.exampleblog.com')
+        cy.get('.submitButton').click()
+      })
+
+      it('the user can like a blog', function () {
+        cy.get('.blogsList')
+          .contains('Test Blog')
+          .contains('show')
+          .click()
+
+        cy.get('.likes').contains('0')
+        cy.get('.likes').contains('likes').click()
+        cy.get('.likes').contains('1')
+
+      })
     })
   })
 
