@@ -14,7 +14,7 @@ describe('Blog app', function() {
     cy.get('.loginContainer')
   })
 
-  describe('Login',function() {
+  describe('Login', function() {
     it('succeeds with correct credentials', function() {
       cy.get('#username').type('Tester')
       cy.get('#password').type('1234')
@@ -30,4 +30,22 @@ describe('Blog app', function() {
       cy.get('.feedback').should('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.get('#username').type('Tester')
+      cy.get('#password').type('1234')
+      cy.contains('login').click()
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('new blog').click()
+      cy.get('#titleInput').type('Test Blog')
+      cy.get('#authorInput').type('John Smith')
+      cy.get('#urlInput').type('www.exampleblog.com')
+      cy.get('.submitButton').click()
+      cy.contains('Test Blog John Smith')
+    })
+  })
+
 })
