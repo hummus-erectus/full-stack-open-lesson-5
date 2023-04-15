@@ -96,6 +96,40 @@ describe('Blog app', function() {
           .click()
 
         cy.get('.blogsList').should('not.contain', '.removeButton')
+      })
+
+      it('the blogs are ordered according to the number of likes', function () {
+        cy.get('.blogsList')
+          .contains('Test Blog')
+          .contains('show')
+          .click()
+
+        cy.get('.likes').contains('0')
+        cy.get('.likes').contains('likes').click()
+        cy.get('.likes').contains('1')
+
+        cy.createBlog({
+          title: 'Other Blog',
+          author: 'Dave Jones',
+          url: 'www.altblog.com'
+        })
+
+        cy.get('.blog').eq(0).should('contain', 'Test Blog')
+        cy.get('.blog').eq(1).should('contain', 'Other Blog')
+
+        cy.get('.blogsList')
+          .contains('Other Blog')
+          .contains('show')
+          .click()
+
+        cy.get('.likes').contains('0')
+        cy.get('.likes').contains('likes').click()
+        cy.get('.likes').contains('1')
+        cy.get('.likes').contains('likes').click()
+        cy.get('.likes').contains('1')
+
+        cy.get('.blog').eq(0).should('contain', 'Other Blog')
+        cy.get('.blog').eq(1).should('contain', 'Test Blog')
 
 
       })
