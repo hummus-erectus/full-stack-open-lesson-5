@@ -1,13 +1,13 @@
 describe('Blog app', function() {
   beforeEach(function() {
-    cy.request('POST', 'http://localhost:3003/api/testing/reset')
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
     const user = {
       name: 'Tester',
       username: 'Tester',
       password: '1234'
     }
-    cy.request('POST', 'http://localhost:3003/api/users/', user)
-    cy.visit('http://localhost:3000')
+    cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user)
+    cy.visit('')
   })
 
   it('Login form is shown', function() {
@@ -33,9 +33,7 @@ describe('Blog app', function() {
 
   describe('When logged in', function() {
     beforeEach(function() {
-      cy.get('#username').type('Tester')
-      cy.get('#password').type('1234')
-      cy.contains('login').click()
+      cy.login({ username: 'Tester', password: '1234' })
     })
 
     it('a blog can be created', function() {
@@ -49,11 +47,11 @@ describe('Blog app', function() {
 
     describe('and a blog exists', function () {
       beforeEach(function () {
-        cy.contains('new blog').click()
-        cy.get('#titleInput').type('Test Blog')
-        cy.get('#authorInput').type('John Smith')
-        cy.get('#urlInput').type('www.exampleblog.com')
-        cy.get('.submitButton').click()
+        cy.createBlog({
+          title: 'Test Blog',
+          author: 'John Smith',
+          url: 'www.exampleblog.com'
+        })
       })
 
       it('the user can like a blog', function () {
@@ -78,6 +76,28 @@ describe('Blog app', function() {
         cy.on('window:confirm', () => true)
         cy.get('.feedback').should('contain', 'Successfully removed Test Blog by John Smith')
         cy.get('.blogsList').should('not.contain', 'Test Blog')
+      })
+
+      it('only the user who created a blog listing can see its remove button', function () {
+        cy.get('.logoutButton').click()
+
+        const user = {
+          name: 'Tester2',
+          username: 'Tester2',
+          password: '1234'
+        }
+        cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user)
+
+        cy.login({ username: 'Tester2', password: '1234' })
+
+        cy.get('.blogsList')
+          .contains('Test Blog')
+          .contains('show')
+          .click()
+
+        cy.get('.blogsList').should('not.contain', '.removeButton')
+
+
       })
 
     })
