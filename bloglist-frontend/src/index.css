@@ -1,16 +1,16 @@
-.feedback{
-    background: lightgrey;
-    font-size: 20px;
-    border-style: solid;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
+.feedback {
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
-.success{
-    color: green;
+.success {
+  color: green;
 }
 
-.error{
-    color: red;
+.error {
+  color: red;
 }

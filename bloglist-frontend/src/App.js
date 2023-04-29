@@ -17,9 +17,7 @@ const App = () => {
   const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
 
   useEffect(() => {
@@ -36,12 +34,11 @@ const App = () => {
 
     try {
       const user = await loginService.login({
-        username, password,
+        username,
+        password,
       })
 
-      window.localStorage.setItem(
-        'loggedBlogListUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedBlogListUser', JSON.stringify(user))
 
       blogService.setToken(user.token)
       setUser(user)
@@ -50,7 +47,7 @@ const App = () => {
     } catch (exception) {
       setFeedbackMessage({
         message: 'Wrong username or password',
-        type: 'error'
+        type: 'error',
       })
       setTimeout(() => {
         setFeedbackMessage(null)
@@ -69,10 +66,9 @@ const App = () => {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
 
-
       setFeedbackMessage({
         message: `${returnedBlog.title} by ${returnedBlog.author} added`,
-        type: 'success'
+        type: 'success',
       })
       setTimeout(() => {
         setFeedbackMessage(null)
@@ -80,7 +76,7 @@ const App = () => {
     } catch (error) {
       setFeedbackMessage({
         message: error.message,
-        type: 'error'
+        type: 'error',
       })
       setTimeout(() => {
         setFeedbackMessage(null)
@@ -89,18 +85,18 @@ const App = () => {
   }
 
   const addLike = async (id) => {
-    const blog = blogs.find(n => n.id === id)
-    const updatedBlog = { ...blog, likes: blog.likes+1 }
+    const blog = blogs.find((n) => n.id === id)
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }
     // console.log('updatedblog', updatedBlog)
 
     try {
       const returnedBlog = await blogService.update(id, updatedBlog)
       // console.log('returnedBlog', returnedBlog)
-      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
     } catch (error) {
       setFeedbackMessage({
         message: `Blog '${blog.title} was already removed from the server`,
-        type: 'error'
+        type: 'error',
       })
       setTimeout(() => {
         setFeedbackMessage(null)
@@ -109,15 +105,15 @@ const App = () => {
   }
 
   const deleteBlog = async (id) => {
-    const blog = blogs.find(n => n.id === id)
+    const blog = blogs.find((n) => n.id === id)
 
-    if (window.confirm(`Do you really want to delete ${blog.title}?`)){
+    if (window.confirm(`Do you really want to delete ${blog.title}?`)) {
       try {
         await blogService.remove(id)
-        setBlogs(blogs.filter(blog => blog.id!== id))
+        setBlogs(blogs.filter((blog) => blog.id !== id))
         setFeedbackMessage({
           message: `Successfully removed ${blog.title} by ${blog.author}`,
-          type: 'success'
+          type: 'success',
         })
         setTimeout(() => {
           setFeedbackMessage(null)
@@ -125,7 +121,7 @@ const App = () => {
       } catch (error) {
         setFeedbackMessage({
           message: error.message,
-          type: 'error'
+          type: 'error',
         })
         setTimeout(() => {
           setFeedbackMessage(null)
@@ -164,39 +160,42 @@ const App = () => {
   }
 
   const blogForm = () => (
-    <Togglable buttonLabel='new blog' ref={blogFormRef}>
+    <Togglable buttonLabel="new blog" ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
     </Togglable>
   )
-
 
   return (
     <div>
       {feedbackMessage && notification()}
 
-      {user === null ?
-        loginForm() :
+      {user === null ? (
+        loginForm()
+      ) : (
         <>
           <p>{user.name} logged in</p>
-          <button onClick={handleLogout} className='logoutButton'>logout</button>
+          <button onClick={handleLogout} className="logoutButton">
+            logout
+          </button>
 
           {blogForm()}
 
           <h2>Blogs</h2>
-          <div className='blogsList'>
-            {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-              <Blog
-                key={blog.id}
-                blog={blog}
-                addLike={() => addLike(blog.id)}
-                deleteBlog={() => deleteBlog(blog.id)}
-                user={user}
-              />
-            )}
+          <div className="blogsList">
+            {blogs
+              .sort((a, b) => b.likes - a.likes)
+              .map((blog) => (
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  addLike={() => addLike(blog.id)}
+                  deleteBlog={() => deleteBlog(blog.id)}
+                  user={user}
+                />
+              ))}
           </div>
         </>
-      }
-
+      )}
     </div>
   )
 }

@@ -1,28 +1,28 @@
-describe('Blog app', function() {
-  beforeEach(function() {
+describe('Blog app', function () {
+  beforeEach(function () {
     cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
     const user = {
       name: 'Tester',
       username: 'Tester',
-      password: '1234'
+      password: '1234',
     }
     cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user)
     cy.visit('')
   })
 
-  it('Login form is shown', function() {
+  it('Login form is shown', function () {
     cy.get('.loginContainer')
   })
 
-  describe('Login', function() {
-    it('succeeds with correct credentials', function() {
+  describe('Login', function () {
+    it('succeeds with correct credentials', function () {
       cy.get('#username').type('Tester')
       cy.get('#password').type('1234')
       cy.contains('login').click()
       cy.contains('Tester logged in')
     })
 
-    it('fails with wrong credentials', function() {
+    it('fails with wrong credentials', function () {
       cy.get('#username').type('Tester')
       cy.get('#password').type('4321')
       cy.contains('login').click()
@@ -31,12 +31,12 @@ describe('Blog app', function() {
     })
   })
 
-  describe('When logged in', function() {
-    beforeEach(function() {
+  describe('When logged in', function () {
+    beforeEach(function () {
       cy.login({ username: 'Tester', password: '1234' })
     })
 
-    it('a blog can be created', function() {
+    it('a blog can be created', function () {
       cy.contains('new blog').click()
       cy.get('#titleInput').type('Test Blog')
       cy.get('#authorInput').type('John Smith')
@@ -50,31 +50,27 @@ describe('Blog app', function() {
         cy.createBlog({
           title: 'Test Blog',
           author: 'John Smith',
-          url: 'www.exampleblog.com'
+          url: 'www.exampleblog.com',
         })
       })
 
       it('the user can like a blog', function () {
-        cy.get('.blogsList')
-          .contains('Test Blog')
-          .contains('show')
-          .click()
+        cy.get('.blogsList').contains('Test Blog').contains('show').click()
 
         cy.get('.likes').contains('0')
         cy.get('.likes').contains('likes').click()
         cy.get('.likes').contains('1')
-
       })
 
       it('the user can delete a blog listing they created', function () {
-        cy.get('.blogsList')
-          .contains('Test Blog')
-          .contains('show')
-          .click()
+        cy.get('.blogsList').contains('Test Blog').contains('show').click()
 
         cy.get('.removeButton').click()
         cy.on('window:confirm', () => true)
-        cy.get('.feedback').should('contain', 'Successfully removed Test Blog by John Smith')
+        cy.get('.feedback').should(
+          'contain',
+          'Successfully removed Test Blog by John Smith'
+        )
         cy.get('.blogsList').should('not.contain', 'Test Blog')
       })
 
@@ -84,25 +80,19 @@ describe('Blog app', function() {
         const user = {
           name: 'Tester2',
           username: 'Tester2',
-          password: '1234'
+          password: '1234',
         }
         cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user)
 
         cy.login({ username: 'Tester2', password: '1234' })
 
-        cy.get('.blogsList')
-          .contains('Test Blog')
-          .contains('show')
-          .click()
+        cy.get('.blogsList').contains('Test Blog').contains('show').click()
 
         cy.get('.blogsList').should('not.contain', '.removeButton')
       })
 
       it('the blogs are ordered according to the number of likes', function () {
-        cy.get('.blogsList')
-          .contains('Test Blog')
-          .contains('show')
-          .click()
+        cy.get('.blogsList').contains('Test Blog').contains('show').click()
 
         cy.get('.likes').contains('0')
         cy.get('.likes').contains('likes').click()
@@ -111,16 +101,13 @@ describe('Blog app', function() {
         cy.createBlog({
           title: 'Other Blog',
           author: 'Dave Jones',
-          url: 'www.altblog.com'
+          url: 'www.altblog.com',
         })
 
         cy.get('.blog').eq(0).should('contain', 'Test Blog')
         cy.get('.blog').eq(1).should('contain', 'Other Blog')
 
-        cy.get('.blogsList')
-          .contains('Other Blog')
-          .contains('show')
-          .click()
+        cy.get('.blogsList').contains('Other Blog').contains('show').click()
 
         cy.get('.likes').contains('0')
         cy.get('.likes').contains('likes').click()
@@ -130,11 +117,7 @@ describe('Blog app', function() {
 
         cy.get('.blog').eq(0).should('contain', 'Other Blog')
         cy.get('.blog').eq(1).should('contain', 'Test Blog')
-
-
       })
-
     })
   })
-
 })

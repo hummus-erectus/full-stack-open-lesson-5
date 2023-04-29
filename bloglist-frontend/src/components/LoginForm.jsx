@@ -5,13 +5,13 @@ const LoginForm = ({
   handleUsernameChange,
   handlePasswordChange,
   username,
-  password
+  password,
 }) => (
-  <div className='loginContainer'>
+  <div className="loginContainer">
     <h2>Login to application</h2>
     <form onSubmit={handleSubmit}>
       <div>
-            username
+        username
         <input
           id="username"
           type="text"
@@ -21,7 +21,7 @@ const LoginForm = ({
         />
       </div>
       <div>
-            password
+        password
         <input
           id="password"
           type="password"
@@ -40,7 +40,7 @@ LoginForm.propTypes = {
   handleUsernameChange: PropTypes.func.isRequired,
   handlePasswordChange: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired
+  password: PropTypes.string.isRequired,
 }
 
 export default LoginForm

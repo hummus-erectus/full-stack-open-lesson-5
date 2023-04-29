@@ -8,26 +8,37 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
   }
 
   return (
-    <div style={blogStyle} className='blog'>
-      <div className='titleAndAuthor'>
+    <div style={blogStyle} className="blog">
+      <div className="titleAndAuthor">
         {blog.title} {blog.author}
-        <button className="toggleButton" onClick={() => setIsOpen(prev => !prev)}>{isOpen? 'hide' : 'show'}</button>
+        <button
+          className="toggleButton"
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
+          {isOpen ? 'hide' : 'show'}
+        </button>
       </div>
-      {isOpen?
+      {isOpen ? (
         <>
-          <p className='url'>{blog.url}</p>
-          <p className='likes'>{blog.likes} <button onClick={addLike} className='likeButton'>likes</button></p>
-          <p className='name'>{blog.user.name}</p>
-          {blog.user.username === user.username && <button className='removeButton' onClick={deleteBlog}>remove</button>}
+          <p className="url">{blog.url}</p>
+          <p className="likes">
+            {blog.likes}{' '}
+            <button onClick={addLike} className="likeButton">
+              likes
+            </button>
+          </p>
+          <p className="name">{blog.user.name}</p>
+          {blog.user.username === user.username && (
+            <button className="removeButton" onClick={deleteBlog}>
+              remove
+            </button>
+          )}
         </>
-        :
-        null
-      }
-
+      ) : null}
     </div>
   )
 }

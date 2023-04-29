@@ -12,20 +12,19 @@ const blog = {
   likes: 50,
   user: {
     name: 'john Smith',
-    username:'JohnDaKillah',
-    id:'34hf93hf98h39fh3'
-  }
+    username: 'JohnDaKillah',
+    id: '34hf93hf98h39fh3',
+  },
 }
 
 const mockUser = {
   name: 'john Smith',
-  username:'JohnDaKillah',
-  id:'34hf93hf98h39fh3'
+  username: 'JohnDaKillah',
+  id: '34hf93hf98h39fh3',
 }
 
 test('renders title and author, but not URL or number of likes', async () => {
-
-  const { container } = render(<Blog blog={blog}/>)
+  const { container } = render(<Blog blog={blog} />)
 
   const titleAndAuthor = container.querySelector('.titleAndAuthor')
   expect(titleAndAuthor).toBeDefined()
@@ -35,12 +34,10 @@ test('renders title and author, but not URL or number of likes', async () => {
 
   const likes = container.querySelector('.likes')
   expect(likes).toBeNull()
-
 })
 
 test('clicking the button reveals url and likes', async () => {
-
-  const { container } = render(<Blog blog={blog} user={mockUser}/>)
+  const { container } = render(<Blog blog={blog} user={mockUser} />)
 
   const user = userEvent.setup()
   const button = container.querySelector('.toggleButton')
@@ -54,10 +51,11 @@ test('clicking the button reveals url and likes', async () => {
 })
 
 test('clicking the like button twice calls the event handler twice', async () => {
-
   const mockHandler = jest.fn()
 
-  const { container } = render(<Blog blog={blog} user={mockUser} addLike={mockHandler}/>)
+  const { container } = render(
+    <Blog blog={blog} user={mockUser} addLike={mockHandler} />
+  )
 
   const user = userEvent.setup()
   const button = container.querySelector('.toggleButton')
@@ -68,14 +66,13 @@ test('clicking the like button twice calls the event handler twice', async () =>
   await user.click(likeButton)
 
   expect(mockHandler.mock.calls).toHaveLength(2)
-
 })
 
 test('<BlogForm /> updates state and calls onSubmit', async () => {
   const mockHandler = jest.fn()
   const user = userEvent.setup()
 
-  const{ container } = render(<BlogForm createBlog={mockHandler} />)
+  const { container } = render(<BlogForm createBlog={mockHandler} />)
 
   const titleInput = container.querySelector('.titleInput')
   const authorInput = container.querySelector('.authorInput')
