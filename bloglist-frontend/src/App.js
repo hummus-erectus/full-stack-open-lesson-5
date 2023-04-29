@@ -1,20 +1,22 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
+import { setNotification } from './reducers/notificationReducer'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [feedbackMessage, setFeedbackMessage] = useState(null)
-  // const [loginVisible, setLoginVisible] = useState(false)
 
   const blogFormRef = useRef()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -45,13 +47,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setFeedbackMessage({
-        message: 'Wrong username or password',
-        type: 'error',
-      })
-      setTimeout(() => {
-        setFeedbackMessage(null)
-      }, 5000)
+      dispatch(setNotification('Wrong username or password', 'error', 5))
     }
   }
 
@@ -66,21 +62,9 @@ const App = () => {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
 
-      setFeedbackMessage({
-        message: `${returnedBlog.title} by ${returnedBlog.author} added`,
-        type: 'success',
-      })
-      setTimeout(() => {
-        setFeedbackMessage(null)
-      }, 5000)
+      dispatch(setNotification(`${returnedBlog.title} by ${returnedBlog.author} added`, 'success', 5))
     } catch (error) {
-      setFeedbackMessage({
-        message: error.message,
-        type: 'error',
-      })
-      setTimeout(() => {
-        setFeedbackMessage(null)
-      }, 5000)
+      dispatch(setNotification(error.message, 'error', 5))
     }
   }
 
@@ -94,13 +78,7 @@ const App = () => {
       // console.log('returnedBlog', returnedBlog)
       setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
     } catch (error) {
-      setFeedbackMessage({
-        message: `Blog '${blog.title} was already removed from the server`,
-        type: 'error',
-      })
-      setTimeout(() => {
-        setFeedbackMessage(null)
-      }, 5000)
+      dispatch(setNotification(`${blog.title} was already removed from the server`, 'error', 5))
     }
   }
 
@@ -111,41 +89,18 @@ const App = () => {
       try {
         await blogService.remove(id)
         setBlogs(blogs.filter((blog) => blog.id !== id))
-        setFeedbackMessage({
-          message: `Successfully removed ${blog.title} by ${blog.author}`,
-          type: 'success',
-        })
-        setTimeout(() => {
-          setFeedbackMessage(null)
-        }, 5000)
+        dispatch(setNotification(`Successfully removed ${blog.title} by ${blog.author}`, 'success', 5))
       } catch (error) {
-        setFeedbackMessage({
-          message: error.message,
-          type: 'error',
-        })
-        setTimeout(() => {
-          setFeedbackMessage(null)
-        }, 5000)
+        dispatch(setNotification(error.message, 'error', 5))
       }
     }
   }
 
-  const notification = () => (
-    <div className={`feedback ${feedbackMessage.type} `}>
-      {feedbackMessage.message}
-    </div>
-  )
-
   const loginForm = () => {
-    // const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    // const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
 
     return (
       <div>
-        {/* <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div> */}
-        {/* <div style={showWhenVisible}> */}
         <LoginForm
           username={username}
           password={password}
@@ -153,8 +108,6 @@ const App = () => {
           handlePasswordChange={({ target }) => setPassword(target.value)}
           handleSubmit={handleLogin}
         />
-        {/* <button onClick={() => setLoginVisible(false)}>cancel</button> */}
-        {/* </div> */}
       </div>
     )
   }
@@ -167,7 +120,7 @@ const App = () => {
 
   return (
     <div>
-      {feedbackMessage && notification()}
+      <Notification />
 
       {user === null ? (
         loginForm()
