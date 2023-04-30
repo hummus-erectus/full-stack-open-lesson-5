@@ -12,6 +12,7 @@ const notficationSlice = createSlice({
     }
   }
 })
+
 export const { newNotification, removeNotification } = notficationSlice.actions
 
 export const setNotification = (message, type, timeout) => {
