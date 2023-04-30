@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
@@ -10,17 +11,18 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
   const dispatch = useDispatch()
+  const blogs = useSelector(({ blog }) => blog)
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogListUser')
@@ -59,42 +61,40 @@ const App = () => {
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
-      const returnedBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(returnedBlog))
-
-      dispatch(setNotification(`${returnedBlog.title} by ${returnedBlog.author} added`, 'success', 5))
+      dispatch(createBlog(blogObject))
+      dispatch(setNotification(`${blogObject.title} by ${blogObject.author} added`, 'success', 5))
     } catch (error) {
       dispatch(setNotification(error.message, 'error', 5))
     }
   }
 
-  const addLike = async (id) => {
-    const blog = blogs.find((n) => n.id === id)
-    const updatedBlog = { ...blog, likes: blog.likes + 1 }
-    // console.log('updatedblog', updatedBlog)
+  // const addLike = async (id) => {
+  //   const blog = blogs.find((n) => n.id === id)
+  //   const updatedBlog = { ...blog, likes: blog.likes + 1 }
+  //   // console.log('updatedblog', updatedBlog)
 
-    try {
-      const returnedBlog = await blogService.update(id, updatedBlog)
-      // console.log('returnedBlog', returnedBlog)
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
-    } catch (error) {
-      dispatch(setNotification(`${blog.title} was already removed from the server`, 'error', 5))
-    }
-  }
+  //   try {
+  //     const returnedBlog = await blogService.update(id, updatedBlog)
+  //     // console.log('returnedBlog', returnedBlog)
+  //     setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
+  //   } catch (error) {
+  //     dispatch(setNotification(`${blog.title} was already removed from the server`, 'error', 5))
+  //   }
+  // }
 
-  const deleteBlog = async (id) => {
-    const blog = blogs.find((n) => n.id === id)
+  // const deleteBlog = async (id) => {
+  //   const blog = blogs.find((n) => n.id === id)
 
-    if (window.confirm(`Do you really want to delete ${blog.title}?`)) {
-      try {
-        await blogService.remove(id)
-        setBlogs(blogs.filter((blog) => blog.id !== id))
-        dispatch(setNotification(`Successfully removed ${blog.title} by ${blog.author}`, 'success', 5))
-      } catch (error) {
-        dispatch(setNotification(error.message, 'error', 5))
-      }
-    }
-  }
+  //   if (window.confirm(`Do you really want to delete ${blog.title}?`)) {
+  //     try {
+  //       await blogService.remove(id)
+  //       setBlogs(blogs.filter((blog) => blog.id !== id))
+  //       dispatch(setNotification(`Successfully removed ${blog.title} by ${blog.author}`, 'success', 5))
+  //     } catch (error) {
+  //       dispatch(setNotification(error.message, 'error', 5))
+  //     }
+  //   }
+  // }
 
   const loginForm = () => {
 
@@ -136,13 +136,12 @@ const App = () => {
           <h2>Blogs</h2>
           <div className="blogsList">
             {blogs
-              .sort((a, b) => b.likes - a.likes)
               .map((blog) => (
                 <Blog
                   key={blog.id}
                   blog={blog}
-                  addLike={() => addLike(blog.id)}
-                  deleteBlog={() => deleteBlog(blog.id)}
+                  // addLike={() => addLike(blog.id)}
+                  // deleteBlog={() => deleteBlog(blog.id)}
                   user={user}
                 />
               ))}
