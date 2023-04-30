@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
-import { initializeBlogs, createBlog } from './reducers/blogReducer'
+import { initializeBlogs, createBlog, newLike, removeBlog } from './reducers/blogReducer'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
@@ -11,7 +11,6 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -68,33 +67,28 @@ const App = () => {
     }
   }
 
-  // const addLike = async (id) => {
-  //   const blog = blogs.find((n) => n.id === id)
-  //   const updatedBlog = { ...blog, likes: blog.likes + 1 }
-  //   // console.log('updatedblog', updatedBlog)
+  const addLike = async (id) => {
+    const blog = blogs.find((n) => n.id === id)
+    try {
+      dispatch(newLike(id))
+      dispatch(setNotification(`You liked "${blog.title}"`, 'success', 5))
+    } catch (error) {
+      dispatch(setNotification(`${blog.title} was already removed from the server`, 'error', 5))
+    }
+  }
 
-  //   try {
-  //     const returnedBlog = await blogService.update(id, updatedBlog)
-  //     // console.log('returnedBlog', returnedBlog)
-  //     setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
-  //   } catch (error) {
-  //     dispatch(setNotification(`${blog.title} was already removed from the server`, 'error', 5))
-  //   }
-  // }
+  const deleteBlog = async (id) => {
+    const blog = blogs.find((n) => n.id === id)
 
-  // const deleteBlog = async (id) => {
-  //   const blog = blogs.find((n) => n.id === id)
-
-  //   if (window.confirm(`Do you really want to delete ${blog.title}?`)) {
-  //     try {
-  //       await blogService.remove(id)
-  //       setBlogs(blogs.filter((blog) => blog.id !== id))
-  //       dispatch(setNotification(`Successfully removed ${blog.title} by ${blog.author}`, 'success', 5))
-  //     } catch (error) {
-  //       dispatch(setNotification(error.message, 'error', 5))
-  //     }
-  //   }
-  // }
+    if (window.confirm(`Do you really want to delete ${blog.title}?`)) {
+      try {
+        dispatch(removeBlog(id))
+        dispatch(setNotification(`Successfully removed ${blog.title} by ${blog.author}`, 'success', 5))
+      } catch (error) {
+        dispatch(setNotification(error.message, 'error', 5))
+      }
+    }
+  }
 
   const loginForm = () => {
 
@@ -140,8 +134,8 @@ const App = () => {
                 <Blog
                   key={blog.id}
                   blog={blog}
-                  // addLike={() => addLike(blog.id)}
-                  // deleteBlog={() => deleteBlog(blog.id)}
+                  addLike={() => addLike(blog.id)}
+                  deleteBlog={() => deleteBlog(blog.id)}
                   user={user}
                 />
               ))}
