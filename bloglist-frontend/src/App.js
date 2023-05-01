@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, newLike, removeBlog } from './reducers/blogReducer'
 import { removeUser, userLogin } from './reducers/userReducer'
+import { Routes, Route } from 'react-router-dom'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Users from './components/Users'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -111,36 +113,43 @@ const App = () => {
   )
 
   return (
-    <div>
+    <>
       <Notification />
-
       {user === null ? (
         loginForm()
       ) : (
         <>
+          <h1>Blogs</h1>
           <p>{user.name} logged in</p>
           <button onClick={handleLogout} className="logoutButton">
             logout
           </button>
 
-          {blogForm()}
+          <Routes>
+            <Route path='/' element=
+              {<>
+                {blogForm()}
 
-          <h2>Blogs</h2>
-          <div className="blogsList">
-            {blogs
-              .map((blog) => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  addLike={() => addLike(blog.id)}
-                  deleteBlog={() => deleteBlog(blog.id)}
-                  user={user}
-                />
-              ))}
-          </div>
+                <div className="blogsList">
+                  <h2>Blog list</h2>
+                  {blogs
+                    .map((blog) => (
+                      <Blog
+                        key={blog.id}
+                        blog={blog}
+                        addLike={() => addLike(blog.id)}
+                        deleteBlog={() => deleteBlog(blog.id)}
+                        user={user}
+                      />
+                    ))}
+                </div>
+              </>}
+            />
+            <Route path='/users' element={<Users />}/>
+          </Routes>
         </>
       )}
-    </div>
+    </>
   )
 }
 
