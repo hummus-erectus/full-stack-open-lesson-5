@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, newLike, removeBlog } from './reducers/blogReducer'
 import { removeUser, userLogin } from './reducers/userReducer'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useMatch } from 'react-router-dom'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
@@ -11,6 +11,7 @@ import Togglable from './components/Togglable'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import Users from './components/Users'
+import User from './components/User'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -20,6 +21,8 @@ const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(({ blog }) => blog)
   const user = useSelector(({ user }) => user)
+  const users = useSelector(({ users }) => users)
+
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -112,6 +115,11 @@ const App = () => {
     </Togglable>
   )
 
+  const match = useMatch('/user/:id')
+  const individualUser = match
+    ? users.find(user => user.id === Number(match.params.id))
+    : null
+
   return (
     <>
       <Notification />
@@ -146,6 +154,7 @@ const App = () => {
               </>}
             />
             <Route path='/users' element={<Users />}/>
+            <Route path='/user' element={<User individualUser={individualUser}/>}/>
           </Routes>
         </>
       )}
