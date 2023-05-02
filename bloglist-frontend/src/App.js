@@ -12,6 +12,7 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import Users from './components/Users'
 import User from './components/User'
+import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -23,9 +24,9 @@ const App = () => {
   const user = useSelector(({ user }) => user)
   const users = useSelector(({ users }) => users)
 
-
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [dispatch])
 
   useEffect(() => {
@@ -94,8 +95,6 @@ const App = () => {
   }
 
   const loginForm = () => {
-
-
     return (
       <div>
         <LoginForm
@@ -115,9 +114,9 @@ const App = () => {
     </Togglable>
   )
 
-  const match = useMatch('/user/:id')
+  const match = useMatch('/users/:id')
   const individualUser = match
-    ? users.find(user => user.id === Number(match.params.id))
+    ? users.find(user => user.id === match.params.id)
     : null
 
   return (
@@ -154,7 +153,7 @@ const App = () => {
               </>}
             />
             <Route path='/users' element={<Users />}/>
-            <Route path='/user' element={<User individualUser={individualUser}/>}/>
+            <Route path='/users/:id' element={<User individualUser={individualUser}/>}/>
           </Routes>
         </>
       )}
