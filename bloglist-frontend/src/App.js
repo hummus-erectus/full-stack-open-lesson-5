@@ -13,6 +13,7 @@ import Notification from './components/Notification'
 import Users from './components/Users'
 import User from './components/User'
 import { initializeUsers } from './reducers/usersReducer'
+import BlogView from './components/BlogView'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -114,10 +115,16 @@ const App = () => {
     </Togglable>
   )
 
-  const match = useMatch('/users/:id')
-  const individualUser = match
-    ? users.find(user => user.id === match.params.id)
+  const matchUser = useMatch('/users/:id')
+  const individualUser = matchUser
+    ? users.find(user => user.id === matchUser.params.id)
     : null
+
+  const matchBlog = useMatch('/blogs/:id')
+  const individualBlog = matchBlog
+    ? blogs.find(blog => blog.id === matchBlog.params.id)
+    : null
+    //
 
   return (
     <>
@@ -144,9 +151,6 @@ const App = () => {
                       <Blog
                         key={blog.id}
                         blog={blog}
-                        addLike={() => addLike(blog.id)}
-                        deleteBlog={() => deleteBlog(blog.id)}
-                        user={user}
                       />
                     ))}
                 </div>
@@ -154,6 +158,8 @@ const App = () => {
             />
             <Route path='/users' element={<Users />}/>
             <Route path='/users/:id' element={<User individualUser={individualUser}/>}/>
+            <Route path='/blogs/:id' element={<BlogView individualBlog={individualBlog} addLike={addLike} deleteBlog={deleteBlog}/>}/>
+
           </Routes>
         </>
       )}
