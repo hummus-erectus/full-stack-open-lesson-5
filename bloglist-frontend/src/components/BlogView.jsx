@@ -23,6 +23,14 @@ const BlogView = ({ individualBlog, addLike, deleteBlog }) => {
           navigate('/')
         }
       }>remove</button>}
+      <h3>Comments</h3>
+      <ul>
+        {blog.comments.map(comment =>
+          (
+            <li key={comment._id}>{comment.content}</li>
+          )
+        )}
+      </ul>
     </>
   )
 }
