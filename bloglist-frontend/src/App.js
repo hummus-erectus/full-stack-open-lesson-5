@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
-import { initializeBlogs, createBlog, newLike, removeBlog } from './reducers/blogReducer'
+import { initializeBlogs, createBlog, newLike, removeBlog, newComment } from './reducers/blogReducer'
 import { removeUser, userLogin } from './reducers/userReducer'
 import { Routes, Route, useMatch } from 'react-router-dom'
 import Blog from './components/Blog'
@@ -83,6 +83,17 @@ const App = () => {
     }
   }
 
+  const addComment = async (id, content) => {
+    // const blog = blogs.find((n) => n.id === id)
+    console.log(content)
+    try {
+      dispatch(newComment(id, content))
+      dispatch(setNotification('Comment added', 'success', 5))
+    } catch (error) {
+      dispatch(setNotification(error.message, 'error', 5))
+    }
+  }
+
   const deleteBlog = async (id) => {
     const blog = blogs.find((n) => n.id === id)
 
@@ -155,7 +166,7 @@ const App = () => {
             />
             <Route path='/users' element={<Users />}/>
             <Route path='/users/:id' element={<User individualUser={individualUser}/>}/>
-            <Route path='/blogs/:id' element={<BlogView individualBlog={individualBlog} addLike={addLike} deleteBlog={deleteBlog}/>}/>
+            <Route path='/blogs/:id' element={<BlogView individualBlog={individualBlog} addLike={addLike} deleteBlog={deleteBlog} addComment={addComment}/>}/>
 
           </Routes>
         </>

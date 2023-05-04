@@ -1,10 +1,19 @@
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
-const BlogView = ({ individualBlog, addLike, deleteBlog }) => {
+const BlogView = ({ individualBlog, addLike, deleteBlog, addComment }) => {
   const blog = individualBlog
   const user = useSelector(({ user }) => user)
   const navigate = useNavigate()
+
+  const [comment, setComment] = useState('')
+
+  const newComment = async (event) => {
+    event.preventDefault()
+    addComment(blog.id, comment)
+    setComment('')
+  }
 
 
   if (!blog) {
@@ -24,6 +33,19 @@ const BlogView = ({ individualBlog, addLike, deleteBlog }) => {
         }
       }>remove</button>}
       <h3>Comments</h3>
+      <form onSubmit={newComment}>
+        <input
+          id="commentInput"
+          type="text"
+          value={comment}
+          name="comment"
+          placeholder='Type comment'
+          onChange={({ target }) => setComment(target.value)}
+        />
+        <button type="submit" className="submitButton">
+          Add Comment
+        </button>
+      </form>
       <ul>
         {blog.comments.map(comment =>
           (
