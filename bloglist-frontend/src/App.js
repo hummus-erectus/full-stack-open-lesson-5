@@ -15,6 +15,8 @@ import User from './components/User'
 import { initializeUsers } from './reducers/usersReducer'
 import BlogView from './components/BlogView'
 import Navigation from './components/Navigation'
+import GlobalStyles from './components/styles/Global'
+import { Container } from './components/styles/Container.styled'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -50,7 +52,7 @@ const App = () => {
 
       window.localStorage.setItem('loggedBlogListUser', JSON.stringify(user))
 
-      dispatch(userLogin(user))
+      await dispatch(userLogin(user))
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -66,7 +68,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
-      dispatch(createBlog(blogObject))
+      await dispatch(createBlog(blogObject))
       dispatch(setNotification(`${blogObject.title} by ${blogObject.author} added`, 'success', 5))
     } catch (error) {
       dispatch(setNotification(error.message, 'error', 5))
@@ -76,7 +78,7 @@ const App = () => {
   const addLike = async (id) => {
     const blog = blogs.find((n) => n.id === id)
     try {
-      dispatch(newLike(id))
+      await dispatch(newLike(id))
       dispatch(setNotification(`You liked "${blog.title}"`, 'success', 5))
     } catch (error) {
       dispatch(setNotification(`${blog.title} was already removed from the server`, 'error', 5))
@@ -84,10 +86,9 @@ const App = () => {
   }
 
   const addComment = async (id, content) => {
-    // const blog = blogs.find((n) => n.id === id)
     console.log(content)
     try {
-      dispatch(newComment(id, content))
+      await dispatch(newComment(id, content))
       dispatch(setNotification('Comment added', 'success', 5))
     } catch (error) {
       dispatch(setNotification(error.message, 'error', 5))
@@ -99,7 +100,7 @@ const App = () => {
 
     if (window.confirm(`Do you really want to delete ${blog.title}?`)) {
       try {
-        dispatch(removeBlog(id))
+        await dispatch(removeBlog(id))
         dispatch(setNotification(`Successfully removed ${blog.title} by ${blog.author}`, 'success', 5))
       } catch (error) {
         dispatch(setNotification(error.message, 'error', 5))
@@ -140,37 +141,40 @@ const App = () => {
 
   return (
     <>
+      <GlobalStyles />
       {user && <Navigation user={user} handleLogout={handleLogout}/>}
       <Notification />
-      <h1>Blog App</h1>
-      {user === null ? (
-        loginForm()
-      ) : (
-        <>
-          <Routes>
-            <Route path='/' element=
-              {<>
-                {blogForm()}
+      <Container>
+        <h1>Blog App</h1>
+        {user === null ? (
+          loginForm()
+        ) : (
+          <>
+            <Routes>
+              <Route path='/' element=
+                {<>
+                  {blogForm()}
 
-                <div className="blogsList">
-                  <h2>Blog list</h2>
-                  {blogs
-                    .map((blog) => (
-                      <Blog
-                        key={blog.id}
-                        blog={blog}
-                      />
-                    ))}
-                </div>
-              </>}
-            />
-            <Route path='/users' element={<Users />}/>
-            <Route path='/users/:id' element={<User individualUser={individualUser}/>}/>
-            <Route path='/blogs/:id' element={<BlogView individualBlog={individualBlog} addLike={addLike} deleteBlog={deleteBlog} addComment={addComment}/>}/>
+                  <div className="blogsList">
+                    <h2>Blog list</h2>
+                    {blogs
+                      .map((blog) => (
+                        <Blog
+                          key={blog.id}
+                          blog={blog}
+                        />
+                      ))}
+                  </div>
+                </>}
+              />
+              <Route path='/users' element={<Users />}/>
+              <Route path='/users/:id' element={<User individualUser={individualUser}/>}/>
+              <Route path='/blogs/:id' element={<BlogView individualBlog={individualBlog} addLike={addLike} deleteBlog={deleteBlog} addComment={addComment}/>}/>
 
-          </Routes>
-        </>
-      )}
+            </Routes>
+          </>
+        )}
+      </Container>
     </>
   )
 }
