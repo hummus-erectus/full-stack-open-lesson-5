@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Button } from './styles/Button.styled'
+import { Form } from './styles/Form.styled'
 
 const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')
@@ -19,11 +21,11 @@ const BlogForm = ({ createBlog }) => {
   }
 
   return (
-    <div className="formContainer">
+    <Form>
       <h2>Create new entry</h2>
 
       <form onSubmit={addBlog}>
-        <div>
+        <div className='input'>
           title:
           <input
             id="titleInput"
@@ -33,7 +35,7 @@ const BlogForm = ({ createBlog }) => {
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
-        <div>
+        <div className='input'>
           author:
           <input
             id="authorInput"
@@ -43,7 +45,7 @@ const BlogForm = ({ createBlog }) => {
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
-        <div>
+        <div className='input'>
           url:
           <input
             id="urlInput"
@@ -53,11 +55,11 @@ const BlogForm = ({ createBlog }) => {
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button type="submit" className="submitButton">
-          Create
-        </button>
+        <Button type="submit" className="submitButton">
+          create
+        </Button>
       </form>
-    </div>
+    </Form>
   )
 }
 

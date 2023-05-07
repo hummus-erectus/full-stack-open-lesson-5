@@ -4,9 +4,9 @@ import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, newLike, removeBlog, newComment } from './reducers/blogReducer'
 import { removeUser, userLogin } from './reducers/userReducer'
 import { Routes, Route, useMatch } from 'react-router-dom'
-import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import BlogsList from './components/BlogsList'
 import Togglable from './components/Togglable'
 import loginService from './services/login'
 import Notification from './components/Notification'
@@ -16,7 +16,20 @@ import { initializeUsers } from './reducers/usersReducer'
 import BlogView from './components/BlogView'
 import Navigation from './components/Navigation'
 import GlobalStyles from './components/styles/Global'
+import { ThemeProvider } from 'styled-components'
 import { Container } from './components/styles/Container.styled'
+
+const theme = {
+  colors: {
+    primary: '#65C3C8',
+    primaryContent: '#00393C',
+    secondary: '#EF9FBC',
+    secondaryContent: '#50001D',
+    base: '#FAF7F5',
+    baseContent: '291334'
+  },
+  mobile: '768px',
+}
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -108,26 +121,6 @@ const App = () => {
     }
   }
 
-  const loginForm = () => {
-    return (
-      <div>
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={handleLogin}
-        />
-      </div>
-    )
-  }
-
-  const blogForm = () => (
-    <Togglable buttonLabel="new blog" ref={blogFormRef}>
-      <BlogForm createBlog={addBlog} />
-    </Togglable>
-  )
-
   const matchUser = useMatch('/users/:id')
   const individualUser = matchUser
     ? users.find(user => user.id === matchUser.params.id)
@@ -140,42 +133,45 @@ const App = () => {
     //
 
   return (
-    <>
-      <GlobalStyles />
-      {user && <Navigation user={user} handleLogout={handleLogout}/>}
-      <Notification />
-      <Container>
-        <h1>Blog App</h1>
-        {user === null ? (
-          loginForm()
-        ) : (
-          <>
-            <Routes>
-              <Route path='/' element=
-                {<>
-                  {blogForm()}
+    <ThemeProvider theme = { theme }>
+      <>
+        <GlobalStyles />
+        {user && <Navigation user={user} handleLogout={handleLogout}/>}
+        <Notification />
+        <Container>
+          <h1>Blog App</h1>
+          {user === null ? (
+            <LoginForm
+              username={username}
+              password={password}
+              handleUsernameChange={({ target }) => setUsername(target.value)}
+              handlePasswordChange={({ target }) => setPassword(target.value)}
+              handleSubmit={handleLogin}
+            />
+          ) : (
+            <>
+              <Routes>
+                <Route path='/' element=
+                  {
+                    <>
+                      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                        <BlogForm createBlog={addBlog} />
+                      </Togglable>
 
-                  <div className="blogsList">
-                    <h2>Blog list</h2>
-                    {blogs
-                      .map((blog) => (
-                        <Blog
-                          key={blog.id}
-                          blog={blog}
-                        />
-                      ))}
-                  </div>
-                </>}
-              />
-              <Route path='/users' element={<Users />}/>
-              <Route path='/users/:id' element={<User individualUser={individualUser}/>}/>
-              <Route path='/blogs/:id' element={<BlogView individualBlog={individualBlog} addLike={addLike} deleteBlog={deleteBlog} addComment={addComment}/>}/>
+                      <BlogsList blogs={blogs}/>
+                    </>
+                  }
+                />
+                <Route path='/users' element={<Users />}/>
+                <Route path='/users/:id' element={<User individualUser={individualUser}/>}/>
+                <Route path='/blogs/:id' element={<BlogView individualBlog={individualBlog} addLike={addLike} deleteBlog={deleteBlog} addComment={addComment}/>}/>
 
-            </Routes>
-          </>
-        )}
-      </Container>
-    </>
+              </Routes>
+            </>
+          )}
+        </Container>
+      </>
+    </ThemeProvider>
   )
 }
 

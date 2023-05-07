@@ -1,9 +1,11 @@
 import userService from '../services/users'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { Table } from './styles/Table.styled'
 
 const Users = () => {
   const [users, setUsers] = useState([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -18,10 +20,14 @@ const Users = () => {
     fetchUsers()
   }, [])
 
+  const handleRowClick = (id) => {
+    navigate(`/users/${id}`)
+  }
+
   return (
     <>
       <h2>Users</h2>
-      <table>
+      <Table>
         <thead>
           <tr>
             <th></th>
@@ -30,13 +36,13 @@ const Users = () => {
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id}>
-              <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
-              <td>{user.blogs.length}</td>
+            <tr key={user.id} onClick={() => handleRowClick(user.id)}>
+              <td className='username'>{user.name}</td>
+              <td className='blogsNum'>{user.blogs.length}</td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </>
   )
 }

@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { Button } from './styles/Button.styled'
+import { ButtonAlt } from './styles/ButtonAlt.styled'
+import { StyledBlogView } from './styles/BlogView.styled'
 
 const BlogView = ({ individualBlog, addLike, deleteBlog, addComment }) => {
   const blog = individualBlog
@@ -21,39 +24,47 @@ const BlogView = ({ individualBlog, addLike, deleteBlog, addComment }) => {
   }
 
   return (
-    <>
+    <StyledBlogView>
       <h2>{blog.title} by {blog.author}</h2>
-      <a href={`//${blog.url}`}>{blog.url}</a>
-      <p>{blog.likes} likes <button onClick={() => addLike(blog.id)}>like</button></p>
-      <p>Added by {blog.user.username}</p>
-      {blog.user.username === user.username && <button onClick={
+      <a className='blogUrl' href={`//${blog.url}`}>{blog.url}</a>
+      <p>{blog.likes} likes <Button onClick={() => addLike(blog.id)}>like</Button></p>
+      <p>Added by <Link to={`/users/${user.id}`} className='username'>{blog.user.username}</Link></p>
+      {blog.user.username === user.username && <ButtonAlt onClick={
         () => {
           deleteBlog(blog.id)
           navigate('/')
         }
-      }>remove</button>}
-      <h3>Comments</h3>
-      <form onSubmit={newComment}>
-        <input
-          id="commentInput"
-          type="text"
-          value={comment}
-          name="comment"
-          placeholder='Type comment'
-          onChange={({ target }) => setComment(target.value)}
-        />
-        <button type="submit" className="submitButton">
-          Add Comment
-        </button>
-      </form>
-      <ul>
-        {blog.comments.map(comment =>
+      }>remove</ButtonAlt>}
+      <div className='commentsContainer'>
+        <h3>Comments</h3>
+        {blog.comments.length>0 ?
+          <ul>
+            {blog.comments.map(comment =>
+              (
+                <li className='userComment' key={comment._id}>&quot;{comment.content}&quot;</li>
+              )
+            )}
+          </ul>
+          :
           (
-            <li key={comment._id}>{comment.content}</li>
+            <p className='noComments'>No comments yet</p>
           )
-        )}
-      </ul>
-    </>
+        }
+        <form onSubmit={newComment}>
+          <input
+            id="commentInput"
+            type="text"
+            value={comment}
+            name="comment"
+            placeholder='Type comment'
+            onChange={({ target }) => setComment(target.value)}
+          />
+          <Button type="submit" className="submitButton">
+            add comment
+          </Button>
+        </form>
+      </div>
+    </StyledBlogView>
   )
 }
 

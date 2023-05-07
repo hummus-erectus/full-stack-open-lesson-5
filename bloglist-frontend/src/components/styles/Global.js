@@ -7,7 +7,7 @@ const GlobalStyles = createGlobalStyle`
     }
 
     body {
-        color: hsl(192, 100%, 9%);
+        color: ${({ theme }) => theme.colors.primaryContent || '#000'};
         font-family: 'Poppins', sans-serif;
         margin: 0;
     }
